@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -59,6 +60,14 @@ export default function SignIn() {
                 onClick={() => setShowPassword
                   ((prevState) => !prevState)} />
               )}
+            </div>
+            <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
+              <p className="mb-6">Don't have an account? 
+                <Link to="/sign-up" className="text-red-600 hover:text-red-700 transition duration-200 ease-in-out ml-4">Register</Link>
+              </p>
+              <p>
+                <Link to="/forgot-password" className="text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out">Forgot Password</Link>
+              </p>
             </div>
           </form>
         </div>
