@@ -44,7 +44,7 @@ export default function Header() {
             ${path("/sign-in") && "text-black border-b-red-500"}`}
               onClick={() => navigate("/sign-in")}
             >
-              <button className="bg-red-500 text-white px-4 py-2 rounded-full">
+              <button className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-slate-200 hover:text-red-500">
                 Sign In
               </button>
             </li>
