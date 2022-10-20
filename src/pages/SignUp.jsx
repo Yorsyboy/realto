@@ -81,6 +81,7 @@ export default function SIgnUp() {
               placeholder="Full Name"
               value={name}
               onChange={onChange}
+              required
             />
             <input
               className="mb-6 w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out"
@@ -89,6 +90,7 @@ export default function SIgnUp() {
               placeholder="Email Address"
               value={email}
               onChange={onChange}
+              required
             />
             <div className="relative mb-6">
               <input
@@ -98,6 +100,7 @@ export default function SIgnUp() {
                 placeholder="Password (at least 6 characters)"
                 value={password}
                 onChange={onChange}
+                required
               />
               {showPassword ? (
                 <AiFillEyeInvisible
