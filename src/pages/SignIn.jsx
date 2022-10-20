@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import OAuth from "../components/OAuth";
+import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
+import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 export default function SignIn() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -17,6 +21,24 @@ export default function SignIn() {
       ...prevState,
       [e.target.id]: e.target.value,
     }));
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      const userCredentials = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      if (userCredentials.user) {
+        navigate("/");
+        toast.success(`Welcome back, ${userCredentials.user.displayName}`);
+      }
+    } catch (error) {
+      toast.error("Unable to sign in , please try again!");
+    }
   };
 
   return (
@@ -33,8 +55,10 @@ export default function SignIn() {
           ></lottie-player>
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
-        <h1 className="text-3xl text-center mt-10 font-bold mb-6 uppercase">Sign In</h1>
-          <form>
+          <h1 className="text-3xl text-center mt-10 font-bold mb-6 uppercase">
+            Sign In
+          </h1>
+          <form onSubmit={onSubmit}>
             <input
               className="mb-6 w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out"
               type="email"
