@@ -2,8 +2,18 @@ import React, { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import OAuth from "../components/OAuth";
+import { db } from "../firebase";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { setDoc, doc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function SIgnUp() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -18,6 +28,32 @@ export default function SIgnUp() {
       ...prevState,
       [e.target.id]: e.target.value,
     }));
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const auth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      updateProfile(auth.currentUser, {
+        displayName: name,
+      });
+      const user = userCredential.user;
+      const formDataCopy = { ...formData };
+      delete formDataCopy[password]; //delete the password from setFormData
+
+      //add data to the database
+      await setDoc(doc(db, "users", user.uid), formDataCopy);
+      toast.success("Account created successfully");
+      navigate("/"); //redirect to home page
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   };
 
   return (
@@ -37,8 +73,8 @@ export default function SIgnUp() {
           <h1 className="text-3xl text-center mt-10 font-bold mb-6 uppercase">
             Sign Up
           </h1>
-          <form>
-          <input
+          <form onSubmit={onSubmit}>
+            <input
               className="mb-6 w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out"
               type="text"
               id="name"
@@ -59,7 +95,7 @@ export default function SIgnUp() {
                 className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out"
                 type={showPassword ? "text" : "password"}
                 id="password"
-                placeholder="Password"
+                placeholder="Password (at least 6 characters)"
                 value={password}
                 onChange={onChange}
               />
@@ -94,13 +130,23 @@ export default function SIgnUp() {
                 </Link>
               </p>
             </div>
-            <button
-              className="w-full bg-blue-600 text-white px-7 py-3 text-sm font-medium uppercase rounded shadow-md
+            {password.length < 6 ? (
+              <button
+                className="w-full bg-white px-7 py-3 text-sm font-medium uppercase rounded shadow-md"
+                type="submit"
+                disabled
+              >
+                Sign Up
+              </button>
+            ) : (
+              <button
+                className="w-full bg-blue-600 text-white px-7 py-3 text-sm font-medium uppercase rounded shadow-md
              hover:bg-blue-700 transition duration-150 ease-in-out hover:shadow-lg active:bg-blue-800"
-              type="submit"
-            >
-              Sign Up
-            </button>
+                type="submit"
+              >
+                Sign Up
+              </button>
+            )}
             <div
               className="flex items-center my-4 before:border-t before:flex-1 before:border-gray-300
           after:border-t after:flex-1 after:border-gray-300"
