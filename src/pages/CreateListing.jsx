@@ -10,9 +10,23 @@ export default function CreateListing() {
     furnished: false,
     address: "",
     description: "",
+    offer: false,
+    regularPrice: 0,
+    discountedPrice: 0,
   });
-  const { type, name, bedrooms, bathrooms, parking, furnished, address, description } =
-    formData;
+  const {
+    type,
+    name,
+    bedrooms,
+    bathrooms,
+    parking,
+    furnished,
+    address,
+    description,
+    offer,
+    regularPrice,
+    discountedPrice,
+  } = formData;
   const handleChange = (e) => {};
   return (
     <main className="max-w-md px-2 mx-auto">
@@ -166,7 +180,7 @@ export default function CreateListing() {
           type="text"
           id="address"
           value={address}
-          required 
+          required
           onChange={handleChange}
           placeholder="Address"
           className="w-full px-4 py-2 text-xl text-gray-700
@@ -174,12 +188,12 @@ export default function CreateListing() {
            ease-in-out duration-150 focus:text-gray-700
             focus:bg-white focus:border-slate-600 mb-6"
         />
-        <p className="text-lg  font-semibold">Description</p>
+        <p className="text-lg font-semibold">Description</p>
         <textarea
           type="text"
           id="description"
           value={description}
-          required 
+          required
           onChange={handleChange}
           placeholder="Description"
           className="w-full px-4 py-2 text-xl text-gray-700
@@ -187,6 +201,103 @@ export default function CreateListing() {
            ease-in-out duration-150 focus:text-gray-700
             focus:bg-white focus:border-slate-600 mb-6"
         />
+
+        <p className="text-lg font-semibold">Offer</p>
+        <div className="flex mb-6">
+          <button
+            type="button"
+            id="offer"
+            value={true}
+            onClick={handleChange}
+            className={`mr-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded
+            hover:shadow-lg focus:shadow-lg active:shadow-lg
+            transition ease-in-out w-full ${
+              !offer ? "bg-white text-black" : "bg-slate-600 text-white"
+            }`}
+          >
+            Yes
+          </button>
+
+          <button
+            type="button"
+            id="offer"
+            value={false}
+            onClick={handleChange}
+            className={`ml-3 px-7 py-3 font-medium text-sm uppercase shadow-md rounded
+            hover:shadow-lg focus:shadow-lg active:shadow-lg
+            transition ease-in-out w-full ${
+              offer ? "bg-white text-black" : "bg-slate-600 text-white"
+            }`}
+          >
+            No
+          </button>
+        </div>
+        <div className="flex items-center mb-6">
+          <div className="">
+            <p className="text-lg font-semibold">Regular price</p>
+            <div className="flex w-full justify-center items-center space-x-6">
+              <input
+                type="number"
+                id="regularPrice"
+                value={regularPrice}
+                onChange={handleChange}
+                min={50}
+                max={400000000}
+                required
+                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
+              />
+              {type === "rent" && (
+                <div className="">
+                  <p className="text-md w-full whitespace-nowrap">$ / Month</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        {offer && (
+          <div className="flex items-center mb-6">
+            <div className="">
+              <p className="text-lg font-semibold">Discounted price</p>
+              <div className="flex w-full justify-center items-center space-x-6">
+                <input
+                  type="number"
+                  id="discountedPrice"
+                  value={discountedPrice}
+                  onChange={handleChange}
+                  min={50}
+                  max={400000000}
+                  required={offer}
+                  className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
+                />
+                {type === "rent" && (
+                  <div className="">
+                    <p className="text-md w-full whitespace-nowrap">
+                      $ / Month
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+        <div className="mb-6">
+          <p className="text-lg font-semibold">Images</p>
+          <p className="text-gray-600">The first image will be the cover (max 6) </p>
+          <input
+            type="file"
+            id="images"
+            onChange={handleChange}
+            accept=".jpg,.png,.jpeg"
+            multiple
+            required
+            className="w-full px-3 py-1.5 bg-white border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600"
+          />
+        </div>
+        <button 
+        className="mb-6 w-full px-7 py-3 bg-blue-600 text-white font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg active:bg-blue-800 active:shadow-lg transition ease-in-out duration-150"
+        type="submit">
+                  Create Listing
+        </button>
       </form>
     </main>
   );
