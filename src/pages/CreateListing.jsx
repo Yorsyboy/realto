@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import Spinner from "../components/Spinner";
 
 export default function CreateListing() {
+  const [geoLocationEnabled, setGeoLocationEnabled] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     type: "rent",
     name: "",
@@ -13,6 +17,9 @@ export default function CreateListing() {
     offer: false,
     regularPrice: 0,
     discountedPrice: 0,
+    latitude: 0,
+    longitude: 0,
+    images: {},
   });
   const {
     type,
@@ -26,6 +33,9 @@ export default function CreateListing() {
     offer,
     regularPrice,
     discountedPrice,
+    latitude,
+    longitude,
+    images,
   } = formData;
 
   const handleChange = (e) => {
@@ -46,18 +56,51 @@ export default function CreateListing() {
     }
 
     // Text / Boolean / Number
-    if(!e.target.files) {
+    if (!e.target.files) {
       setFormData((prevState) => ({
         ...prevState,
         [e.target.id]: boolean ?? e.target.value,
-      }))
+      }));
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    if(discountedPrice >= regularPrice) {
+      setLoading(false);
+      toast.error("Discounted price must be less than regular price");
+      return;
+    }
+    if(images.length > 6) {
+      setLoading(false);
+      toast.error("You can only upload a maximum of 6 images");
+      return;
+    }
+
+    const options = {
+      method: 'GET',
+    };
+
+    let geolocation = {};
+    let location;
+    if (geoLocationEnabled) {
+      const response = await fetch(`https://api.geoapify.com/v1/geocode/search?address=${address}&apiKey=${process.env.REACT_APP_GEOAPIFY_API_KEY}`,
+  options);
+      const data = await response.json();
+      console.log(data);
+    }
+    
+  }
+
+  if(loading) {
+    return <Spinner />;
+  }
 
   return (
     <main className="max-w-md px-2 mx-auto">
       <h1 className="text-3xl text-center mt-6 font-bold">Create a Listing</h1>
-      <form>
+      <form onSubmit={handleSubmit}>
         <p className="text-lg mt-6 font-semibold">Sell or Rent</p>
         <div className="flex">
           <button
@@ -214,6 +257,36 @@ export default function CreateListing() {
            ease-in-out duration-150 focus:text-gray-700
             focus:bg-white focus:border-slate-600 mb-6"
         />
+        {!geoLocationEnabled && (
+          <div className="flex space-x-6 mb-6">
+              <div className="">
+                <p className="text-lg font-semibold">Latitude</p>
+                <input
+                  type="number"
+                  id="latitude"
+                  value={latitude}
+                  onChange={handleChange}
+                  required
+                  min={-90}
+                  max={90}
+                  className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
+                />
+              </div>
+              <div className="">
+                <p className="text-lg font-semibold">Longitude</p>
+                <input
+                  type="number"
+                  id="longitude"
+                  value={longitude}
+                  onChange={handleChange}
+                  required
+                  min={-180}
+                  max={180}
+                  className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
+                />
+              </div>
+          </div>
+        )}
         <p className="text-lg font-semibold">Description</p>
         <textarea
           type="text"
