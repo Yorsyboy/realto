@@ -27,7 +27,33 @@ export default function CreateListing() {
     regularPrice,
     discountedPrice,
   } = formData;
-  const handleChange = (e) => {};
+
+  const handleChange = (e) => {
+    let boolean = null;
+    if (e.target.value === "true") {
+      boolean = true;
+    }
+    if (e.target.value === "false") {
+      boolean = false;
+    }
+
+    // Files
+    if (e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        images: e.target.files,
+      }));
+    }
+
+    // Text / Boolean / Number
+    if(!e.target.files) {
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.id]: boolean ?? e.target.value,
+      }))
+    }
+  };
+
   return (
     <main className="max-w-md px-2 mx-auto">
       <h1 className="text-3xl text-center mt-6 font-bold">Create a Listing</h1>
@@ -282,7 +308,9 @@ export default function CreateListing() {
         )}
         <div className="mb-6">
           <p className="text-lg font-semibold">Images</p>
-          <p className="text-gray-600">The first image will be the cover (max 6) </p>
+          <p className="text-gray-600">
+            The first image will be the cover (max 6){" "}
+          </p>
           <input
             type="file"
             id="images"
@@ -293,10 +321,11 @@ export default function CreateListing() {
             className="w-full px-3 py-1.5 bg-white border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600"
           />
         </div>
-        <button 
-        className="mb-6 w-full px-7 py-3 bg-blue-600 text-white font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg active:bg-blue-800 active:shadow-lg transition ease-in-out duration-150"
-        type="submit">
-                  Create Listing
+        <button
+          className="mb-6 w-full px-7 py-3 bg-blue-600 text-white font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg active:bg-blue-800 active:shadow-lg transition ease-in-out duration-150"
+          type="submit"
+        >
+          Create Listing
         </button>
       </form>
     </main>
