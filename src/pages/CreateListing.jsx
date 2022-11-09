@@ -12,7 +12,6 @@ import { v4 as uuidv4 } from "uuid";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
-import { isEmpty } from "@firebase/util";
 
 export default function CreateListing() {
   const navigate = useNavigate();
