@@ -176,6 +176,7 @@ export default function CreateListing() {
       imgUrls,
       geolocation,
       timestamp: serverTimestamp(),
+      useRef: auth.currentUser.uid,
     };
     delete formDataCopy.images;
     //if offer is false, delete discountedPrice
