@@ -1,8 +1,22 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { getAuth } from "firebase/auth";
+import { v4 as uuidv4 } from "uuid";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase";
+import { useNavigate } from "react-router-dom";
+import { isEmpty } from "@firebase/util";
 
 export default function CreateListing() {
+  const navigate = useNavigate();
+  const auth = getAuth();
   const [geoLocationEnabled, setGeoLocationEnabled] = useState(true);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -67,33 +81,116 @@ export default function CreateListing() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if(discountedPrice >= regularPrice) {
+
+    // +discountedPrice converted to number
+    if (+discountedPrice >= +regularPrice) {
       setLoading(false);
-      toast.error("Discounted price must be less than regular price");
+      toast.error("Discounted  price must be less than regular price");
       return;
     }
-    if(images.length > 6) {
+    if (images.length > 6) {
       setLoading(false);
       toast.error("You can only upload a maximum of 6 images");
       return;
     }
 
-    const options = {
-      method: 'GET',
-    };
-
     let geolocation = {};
     let location;
     if (geoLocationEnabled) {
-      const response = await fetch(`https://api.geoapify.com/v1/geocode/search?address=${address}&apiKey=${process.env.REACT_APP_GEOAPIFY_API_KEY}`,
-  options);
+      const params = {
+        access_key: process.env.REACT_APP_GEOCODING_API_KEY,
+        query: address,
+      };
+      const response = await fetch(`
+      http://api.positionstack.com/v1/forward?access_key=${params.access_key}&query=${params.query}`);
       const data = await response.json();
-      console.log(data);
-    }
-    
-  }
+      //if the data returned is empty then the latitude and longitude will be 0
+      geolocation.lat = data.data[0]?.latitude ?? 0;
+      geolocation.lng = data.data[0]?.longitude ?? 0;
 
-  if(loading) {
+      //if the data returned is empty then the location is undefined
+      location = data.data[0]?.label ?? undefined;
+      console.log(data)
+      console.log(location)
+
+      if (location === undefined) {
+        setLoading(false);
+        toast.error("Please enter a valid address");
+        return;
+      }
+      console.log(data);
+      console.log(process.env.REACT_APP_GEOCODING_API_KEY);
+    } else {
+      geolocation.lat = latitude;
+      geolocation.lng = longitude;
+    }
+
+    const storeImage = async (image) => {
+      return new Promise((resolve, reject) => {
+        const storage = getStorage();
+        const filename = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`;
+        const storageRef = ref(storage, filename);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            // Observe state change events such as progress, pause, and resume
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+              case "paused":
+                console.log("Upload is paused");
+                break;
+              case "running":
+                console.log("Upload is running");
+                break;
+            }
+          },
+          (error) => {
+            // Handle unsuccessful uploads
+            reject(error);
+          },
+          () => {
+            // Handle successful uploads on complete
+            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
+      });
+    };
+
+    const imgUrls = await Promise.all(
+      [...images].map((image) => storeImage(image))
+    ).catch((error) => {
+      setLoading(false);
+      toast.error("Error uploading images");
+      return;
+    });
+
+    const formDataCopy = {
+      ...formData,
+      imgUrls,
+      geolocation,
+      timestamp: serverTimestamp(),
+    };
+    delete formDataCopy.images;
+    //if offer is false, delete discountedPrice
+    !formDataCopy.offer && delete formDataCopy.discountedPrice;
+    delete formDataCopy.latitude;
+    delete formDataCopy.longitude;
+
+    // Add listing to firestore
+    const docRef = await addDoc(collection(db, "listings"), formDataCopy);
+    setLoading(false);
+    toast.success("Listing created successfully");
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+  };
+
+  if (loading) {
     return <Spinner />;
   }
 
@@ -259,32 +356,32 @@ export default function CreateListing() {
         />
         {!geoLocationEnabled && (
           <div className="flex space-x-6 mb-6">
-              <div className="">
-                <p className="text-lg font-semibold">Latitude</p>
-                <input
-                  type="number"
-                  id="latitude"
-                  value={latitude}
-                  onChange={handleChange}
-                  required
-                  min={-90}
-                  max={90}
-                  className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
-                />
-              </div>
-              <div className="">
-                <p className="text-lg font-semibold">Longitude</p>
-                <input
-                  type="number"
-                  id="longitude"
-                  value={longitude}
-                  onChange={handleChange}
-                  required
-                  min={-180}
-                  max={180}
-                  className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
-                />
-              </div>
+            <div className="">
+              <p className="text-lg font-semibold">Latitude</p>
+              <input
+                type="number"
+                id="latitude"
+                value={latitude}
+                onChange={handleChange}
+                required
+                min={-90}
+                max={90}
+                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
+              />
+            </div>
+            <div className="">
+              <p className="text-lg font-semibold">Longitude</p>
+              <input
+                type="number"
+                id="longitude"
+                value={longitude}
+                onChange={handleChange}
+                required
+                min={-180}
+                max={180}
+                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
+              />
+            </div>
           </div>
         )}
         <p className="text-lg font-semibold">Description</p>
