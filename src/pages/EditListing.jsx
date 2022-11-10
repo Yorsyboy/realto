@@ -9,15 +9,24 @@ import {
 } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import { v4 as uuidv4 } from "uuid";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
 
-export default function CreateListing() {
+export default function EditListing() {
   const navigate = useNavigate();
   const auth = getAuth();
   const [geoLocationEnabled, setGeoLocationEnabled] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [listing, setListing] = useState(null);
   const [formData, setFormData] = useState({
     type: "rent",
     name: "",
@@ -50,6 +59,33 @@ export default function CreateListing() {
     longitude,
     images,
   } = formData;
+
+  const params = useParams();
+
+  // allow only logged in users that owns the listing to edit listing
+  useEffect(() => {
+    if (listing && listing.userRef !== auth.currentUser.uid) {
+      toast.error("You are not authorized to edit this listing");
+      navigate("/");
+    }
+  }, [listing, auth.currentUser.uid, navigate]);
+
+  useEffect(() => {
+    setLoading(true);
+    const fetchListing = async () => {
+      const docRef = doc(db, "listings", params.listingId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setListing(docSnap.data());
+        setFormData({ ...docSnap.data() });
+        setLoading(false);
+      } else {
+        navigate("/");
+        toast.error("Listing not found");
+      }
+    };
+    fetchListing();
+  }, [navigate, params.listingId]);
 
   const handleChange = (e) => {
     let boolean = null;
@@ -109,16 +145,14 @@ export default function CreateListing() {
 
       //if the data returned is empty then the location is undefined
       location = data.data[0]?.label ?? undefined;
-      console.log(data)
-      console.log(location)
+      console.log(data);
+      console.log(location);
 
       if (location === undefined) {
         setLoading(false);
         toast.error("Please enter a valid address");
         return;
       }
-      console.log(data);
-      console.log(process.env.REACT_APP_GEOCODING_API_KEY);
     } else {
       geolocation.lat = latitude;
       geolocation.lng = longitude;
@@ -183,10 +217,11 @@ export default function CreateListing() {
     delete formDataCopy.latitude;
     delete formDataCopy.longitude;
 
-    // Add listing to firestore
-    const docRef = await addDoc(collection(db, "listings"), formDataCopy);
+    // update listing to firestore
+    const docRef = doc(db, "listings", params.listingId);
+    await updateDoc(docRef, formDataCopy);
     setLoading(false);
-    toast.success("Listing created successfully");
+    toast.success("Listing Updated successfully");
     navigate(`/category/${formDataCopy.type}/${docRef.id}`);
   };
 
@@ -196,7 +231,7 @@ export default function CreateListing() {
 
   return (
     <main className="max-w-md px-2 mx-auto">
-      <h1 className="text-3xl text-center mt-6 font-bold">Create a Listing</h1>
+      <h1 className="text-3xl text-center mt-6 font-bold">Edit Listing</h1>
       <form onSubmit={handleSubmit}>
         <p className="text-lg mt-6 font-semibold">Sell or Rent</p>
         <div className="flex">
@@ -495,7 +530,7 @@ export default function CreateListing() {
           className="mb-6 w-full px-7 py-3 bg-blue-600 text-white font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg active:bg-blue-800 active:shadow-lg transition ease-in-out duration-150"
           type="submit"
         >
-          Create Listing
+          Update Listing
         </button>
       </form>
     </main>

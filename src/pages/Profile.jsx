@@ -2,10 +2,21 @@ import React, { useState } from "react";
 import { getAuth, updateProfile } from "firebase/auth";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import { doc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../firebase";
 import { FcHome } from "react-icons/fc";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import ListingItem from "../components/ListingItem";
 
 export default function Profile() {
   const auth = getAuth();
@@ -15,6 +26,8 @@ export default function Profile() {
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
   });
+  const [listings, setListings] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const { name, email } = formData;
 
@@ -43,6 +56,46 @@ export default function Profile() {
     } catch (error) {
       toast.error("Error updating profile");
     }
+  };
+
+  useEffect(() => {
+    const fetchUserListings = async () => {
+      const listingRef = collection(db, "listings");
+      //get a list of all listings where the user id is the same as the current user
+      const q = query(
+        listingRef,
+        where("useRef", "==", auth.currentUser.uid),
+        orderBy("timestamp", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+      let listings = [];
+      querySnapshot.forEach((doc) => {
+        return listings.push({
+          id: doc.id,
+          data: doc.data(),
+        });
+      });
+      // console.log(listings.id);
+      setListings(listings);
+      setLoading(false);
+    };
+    fetchUserListings();
+  }, [auth.currentUser.uid]);
+
+  const onDelete = async (listingID) => {
+    if (window.confirm("Are you sure you want to delete this listing?")) {
+      await deleteDoc(doc(db, "listings", listingID));
+      const updatedListings = listings.filter(
+        (listing) => listing.id !== listingID
+      );
+      setListings(updatedListings);
+      toast.success("Listing deleted successfully");
+    } else {
+      toast.error("Listing not deleted");
+    }
+  };
+  const onEdit = (listingID) => {
+    navigate(`/edit-listing/${listingID}`);
   };
 
   const Logout = () => {
@@ -110,6 +163,29 @@ export default function Profile() {
           </button>
         </div>
       </section>
+      <div className="max-w-6xl px-3 mt-6 mx-auto">
+        {!loading && listings.length > 0 && (
+          <>
+            <h2 className="text-2xl text-center font-semibold mb-6">
+              My Listings
+            </h2>
+            <ul
+              className="sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5
+            mt-6 mb-6"
+            >
+              {listings.map((listing) => (
+                <ListingItem
+                  key={listing.id}
+                  id={listing.id}
+                  listing={listing.data}
+                  onDelete={() => onDelete(listing.id)}
+                  onEdit={() => onEdit(listing.id)}
+                />
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
     </>
   );
 }
