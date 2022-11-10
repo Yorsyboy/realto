@@ -2,13 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Moment from "react-moment";
 import { MdLocationOn } from "react-icons/md";
+import { FaTrash } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
 
-export default function ListingItem({ listing, id }) {
+export default function ListingItem({ listing, id, onEdit, onDelete }) {
   return (
     <li
       className="relative bg-white flex flex-col justify-between items-center
     shadow-md hover:shadow-xl rounded-md overflow-hidden transition-shadow duration-150
-    m-[10px]">
+    m-[10px]"
+    >
       <Link className="contents" to={`/category/${listing.type}/${id}`}>
         <img
           className="h-[170px] w-full object-cover hover:scale-105 
@@ -55,7 +58,7 @@ export default function ListingItem({ listing, id }) {
               <p className="font-bold text-xs mb-1">
                 {listing.bedrooms > 1 ? `${listing.bedrooms} Beds ` : "1 Bed"}
               </p>
-            </div> 
+            </div>
             <div className="flex items-center space-x-1">
               {/* if listing has more than 1 bathrooms, show the number bathrooms with baths, else show 1 bath */}
               <p className="font-bold text-xs mb-1">
@@ -67,6 +70,18 @@ export default function ListingItem({ listing, id }) {
           </div>
         </div>
       </Link>
+      {onDelete && (
+        <FaTrash
+          className="absolute bottom-2 right-2 h-[14px] cursor-pointer text-red-500"
+          onClick={() => onDelete(listing.id)}
+        />
+      )}
+      {onEdit && (
+        <MdEdit
+          className="absolute bottom-2 right-7 h-4 cursor-pointer "
+          onClick={() => onEdit(listing.id)}
+        />
+      )}
     </li>
   );
 }
