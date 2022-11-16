@@ -64,7 +64,7 @@ export default function EditListing() {
 
   // allow only logged in users that owns the listing to edit listing
   useEffect(() => {
-    if (listing && listing.userRef !== auth.currentUser.uid) {
+    if (listing && listing.useRef !== auth.currentUser.uid) {
       toast.error("You are not authorized to edit this listing");
       navigate("/");
     }
