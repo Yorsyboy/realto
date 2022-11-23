@@ -15,11 +15,11 @@ body {
   background: red !important;
 }
 
+html {
+  scrollbar-width: none;
+}
+
 /* remove scroll bar */
 html::-webkit-scrollbar {
   display: none;
-}
-
-html {
-  scrollbar-width: none;
 }
