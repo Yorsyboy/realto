@@ -30,7 +30,7 @@ export default function Header() {
       <header className="flex justify-between items-center px-3 max-w-6xl mx-auto">
         <div>
           <img
-            className="h-5 cursor-pointer"
+            className="h-3 cursor-pointer md:h-5 lg:h-6"
             src="https://static.rdc.moveaws.com/images/logos/rdc-logo-default.svg"
             alt="logo"
             onClick={() => navigate("/")}
@@ -40,7 +40,7 @@ export default function Header() {
           <ul className="flex space-x-10">
             <li
               className={`cursor-pointer py-3 text-sm font-semibold
-            text-gray-400 border-b-[3px] border-b-transparent
+            text-gray-400 border border-b-[3px] border-b-transparent
             ${path("/") && "text-black border-b-red-500"}`}
               onClick={() => navigate("/")}
             >
@@ -48,21 +48,20 @@ export default function Header() {
             </li>
             <li
               className={`cursor-pointer py-3 text-sm font-semibold
-            text-gray-400 border-b-[3px] border-b-transparent
+            text-gray-400 border border-b-[3px] border-b-transparent
             ${path("/offers") && "text-black border-b-red-500"}`}
               onClick={() => navigate("/offers")}
             >
               Offers
             </li>
             <li
-              className={`cursor-pointer py-2 text-sm font-semibold
-            text-gray-400 border-b-[3px] border-b-transparent
+              className={`cursor-pointer py-3 text-sm font-semibold
+            text-gray-400 border border-b-[3px] border-b-transparent
             ${(path("/sign-in") || path("/profile")) && "text-black border-b-red-500"}`}
               onClick={() => navigate("/profile")}
             >
-              <button className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-slate-200 hover:text-red-500">
+             
                 {pageState}
-              </button>
             </li>
           </ul>
         </div>

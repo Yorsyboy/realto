@@ -243,7 +243,7 @@ export default function CreateListing() {
           maxLength={32}
           minLength={10}
           className="w-full px-4 py-2 text-xl text-gray-700
-           bg-white border-gray-300 rounded transition 
+           bg-white border border-gray-300 rounded transition 
            ease-in-out duration-150 focus:text-gray-700
             focus:bg-white focus:border-slate-600 mb-6"
         />
@@ -259,7 +259,7 @@ export default function CreateListing() {
               max={10}
               required
               className="w-full px-4 py-2 text-xl text-gray-700
-               bg-white border-gray-300 rounded transition 
+               bg-white border border-gray-300 rounded transition 
                ease-in-out duration-150 focus:text-gray-700
                 focus:bg-white focus:border-slate-600 text-center"
             />
@@ -275,7 +275,7 @@ export default function CreateListing() {
               max={10}
               required
               className="w-full px-4 py-2 text-xl text-gray-700
-               bg-white border-gray-300 rounded transition 
+               bg-white border border-gray-300 rounded transition 
                ease-in-out duration-150 focus:text-gray-700
                 focus:bg-white focus:border-slate-600 text-center"
             />
@@ -350,7 +350,7 @@ export default function CreateListing() {
           onChange={handleChange}
           placeholder="Address"
           className="w-full px-4 py-2 text-xl text-gray-700
-           bg-white border-gray-300 rounded transition 
+           bg-white border border-gray-300 rounded transition 
            ease-in-out duration-150 focus:text-gray-700
             focus:bg-white focus:border-slate-600 mb-6"
         />
@@ -366,7 +366,7 @@ export default function CreateListing() {
                 required
                 min={-90}
                 max={90}
-                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
+                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
               />
             </div>
             <div className="">
@@ -393,7 +393,7 @@ export default function CreateListing() {
           onChange={handleChange}
           placeholder="Description"
           className="w-full px-4 py-2 text-xl text-gray-700
-           bg-white border-gray-300 rounded transition 
+           bg-white border border-gray-300 rounded transition 
            ease-in-out duration-150 focus:text-gray-700
             focus:bg-white focus:border-slate-600 mb-6"
         />
@@ -440,7 +440,7 @@ export default function CreateListing() {
                 min={50}
                 max={400000000}
                 required
-                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
+                className="w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition ease-in-out duration-150 focus:text-gray-700 focus:bg-white focus:border-slate-600 text-center"
               />
               {type === "rent" && (
                 <div className="">

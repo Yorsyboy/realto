@@ -71,7 +71,7 @@ export default function Listing() {
         ))}
       </Swiper>
       <div
-        className="fixed top-[13%] right-[3%] z-10
+        className="fixed top-[15%] right-[3%] md:top-[13%] z-10
        bg-white cursor-pointer border-gray-400 rounded-full 
        w-12 h-12 flex justify-center items-center"
         onClick={() => {
@@ -137,7 +137,7 @@ export default function Listing() {
           </p>
           <ul
             className="flex items-center space-x-2
-          lg:space-x-10 text-sm font-semibold mb-6"
+          lg:space-x-10 text-sm font-semibold mb-6 flex-wrap"
           >
             <li className="flex items-center whitespace-nowrap">
               <FaBed className="text-lg mr-1" />
