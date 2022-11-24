@@ -105,7 +105,7 @@ export default function CreateListing() {
       // const response = await fetch(`
       // http://api.positionstack.com/v1/forward?access_key=${params.access_key}&query=${params.query}`);
       const data = await response.json();
-      console.log(data.results[0].geometry);
+      // console.log(data.results[0].geometry);
       //if the data returned is empty then the latitude and longitude will be 0
       geolocation.lat = data.results[0].geometry.lat ?? 0;
       geolocation.lng = data.results[0].geometry.lng ?? 0;

@@ -137,22 +137,27 @@ export default function EditListing() {
         query: address,
       };
       const response = await fetch(`
-      http://api.positionstack.com/v1/forward?access_key=${params.access_key}&query=${params.query}`);
+      https://api.opencagedata.com/geocode/v1/json?q=${params.query}&key=${params.access_key}`);
+      // const response = await fetch(`
+      // http://api.positionstack.com/v1/forward?access_key=${params.access_key}&query=${params.query}`);
       const data = await response.json();
+      // console.log(data.results[0].geometry);
       //if the data returned is empty then the latitude and longitude will be 0
-      geolocation.lat = data.data[0]?.latitude ?? 0;
-      geolocation.lng = data.data[0]?.longitude ?? 0;
+      geolocation.lat = data.results[0].geometry.lat ?? 0;
+      geolocation.lng = data.results[0].geometry.lng ?? 0;
 
       //if the data returned is empty then the location is undefined
-      location = data.data[0]?.label ?? undefined;
-      console.log(data);
-      console.log(location);
+      location = data.results[0]?.formatted ?? undefined;
+      // console.log(data)
+      // console.log(location)
 
       if (location === undefined) {
         setLoading(false);
         toast.error("Please enter a valid address");
         return;
       }
+      // console.log(data);
+      // console.log(process.env.REACT_APP_GEOCODING_API_KEY);
     } else {
       geolocation.lat = latitude;
       geolocation.lng = longitude;
