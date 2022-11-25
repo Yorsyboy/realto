@@ -2,55 +2,51 @@
 
 # Realtor Clone
 
-> Description the project.
+> Realtor clone is a webapp created with reactjs and firestore that allows a user to sell and rent apartments/houses
 
 
 ## Built With
 
-- Major languages
-- Frameworks
-- Technologies used
+- ReactJs
+- Firebase
+- OpenCage Geocoding Api
 
 ## Live Demo (if available)
 
-[Live Demo Link](https://livedemo.com)
+[Realtor clone](https://realtor-clone-henna.vercel.app/)
 
 
 ## Getting Started
 
-**This is an example of how you may give instructions on setting up your project locally.**
-**Modify this file to match your project, remove sections that don't apply. For example: delete the testing section if the currect project doesn't require testing.**
-
-
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
+- Browser
+- IDE (eg Vscode)
+- NodeJs installed in your system
 
 ### Setup
+- Open terminal and clone the project: `https://github.com/Yorsyboy/realtor-clone.git`
+- cd into the directory `realtor-clone`
 
 ### Install
-
-### Usage
-
-### Run tests
+- On your terminal run : `npm i`
+- To run the app in the development mode : `npm start`
 
 ### Deployment
+
+- [Vercel](https://vercel.com/)
 
 
 
 ## Authors
 
-👤 **Author1**
+👤 **Toyosi Taiwo**
 
-- GitHub: [@githubhandle](https://github.com/githubhandle)
-- Twitter: [@twitterhandle](https://twitter.com/twitterhandle)
-- LinkedIn: [LinkedIn](https://linkedin.com/in/linkedinhandle)
+- GitHub: [@Yorsyboy](https://github.com/Yorsyboy)
+- Twitter: [@tboytaiwo](https://twitter.com/Tboytaiwo)
+- LinkedIn: [Toyosi Taiwo](https://linkedin.com/in/taiwo-toyosi)
 
-👤 **Author2**
-
-- GitHub: [@githubhandle](https://github.com/githubhandle)
-- Twitter: [@twitterhandle](https://twitter.com/twitterhandle)
-- LinkedIn: [LinkedIn](https://linkedin.com/in/linkedinhandle)
 
 ## 🤝 Contributing
 
@@ -64,12 +60,9 @@ Give a ⭐️ if you like this project!
 
 ## Acknowledgments
 
-- Hat tip to anyone whose code was used
-- Inspiration
-- etc
+- Microverse
 
 ## 📝 License
 
 This project is [MIT](./LICENSE) licensed.
 
-_NOTE: we recommend using the [MIT license](https://choosealicense.com/licenses/mit/) - you can set it up quickly by [using templates available on GitHub](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/adding-a-license-to-a-repository). You can also use [any other license](https://choosealicense.com/licenses/) if you wish._
