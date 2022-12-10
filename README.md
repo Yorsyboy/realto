@@ -14,7 +14,7 @@
 
 ## Live Demo (if available)
 
-[Realtor clone](https://realtor-clone-henna.vercel.app/)
+- [Realtor clone](https://realtor-clone-henna.vercel.app/)
 
 
 ## Getting Started
