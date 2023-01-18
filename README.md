@@ -2,7 +2,7 @@
 
 # Realtor Clone
 
-> Realtor clone is a webapp created with reactjs and firestore that allows a user to sell and rent apartments/houses.
+>Realtor-clone is a web-based software application that enables users to search for real estate listings, properties, and connect with local realtors. It offers a comprehensive database of homes for sale and rent, including detailed information about each property, such as photos, amenities, and pricing.
 
 
 
